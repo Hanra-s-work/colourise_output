@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+colourise_output.egg-info/PKG-INFO
+colourise_output.egg-info/SOURCES.txt
+colourise_output.egg-info/dependency_links.txt
+colourise_output.egg-info/top_level.txt
+src/colourise_output.py

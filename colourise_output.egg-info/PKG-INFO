@@ -1,3 +1,16 @@
+Metadata-Version: 2.1
+Name: colourise-output
+Version: 1.0.0
+Summary: A module to help add colour in the terminal using batch colour codes.
+Home-page: https://github.com/Hanra-s-work/colourise_output
+Author: Henry Letellier
+Author-email: henrysoftwarehouse@protonmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # colourise_output
 
 ## Description
