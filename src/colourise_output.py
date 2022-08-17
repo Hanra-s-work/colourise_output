@@ -14,6 +14,7 @@ Crediting the author would be appreciated
 
 import os
 import platform
+from time import sleep
 import colorama as COC
 
 class ColouriseOutput:
@@ -90,17 +91,32 @@ class ColouriseOutput:
         self.load_for_non_windows()
         if (self.wich_system == "Windows") :
             self.load_for_windows()
+    
+    def load_ressources(self) -> None:
+        """ Same as init_pallet but easier to remember due to unload_ressources """
+        self.init_pallet()
+    
+    def init_ressources(self) -> None:
+        """ Same as init_pallet but easier to remember due to unload_ressources """
+        self.init_pallet()
 
     def unload_ressources(self) -> None:
         """ Free the ressources that can be freed """
         COC.deinit()
+    
+    def deinit_ressources(self) -> None:
+        """ Same as unload_ressources but easier to remember dur to unload ressources """
+        self.unload_ressources()
 
-    def test_colours(self) -> None:
+    def test_colours(self, delay:int=0) -> None:
         """ Display all the available colours and their code """
         print("Displaying all available colours:")
-        for i in self.unix_colour_pallet:
+        colour_pallet_list = list(self.unix_colour_pallet)
+        colour_pallet_list.sort()
+        for i in colour_pallet_list:
             self.display("rr", (), "\n")
             self.display(i, (), f"Current colour: '{i}'")
+            sleep(delay)
         self.display("rr", (), f"\n{len(self.unix_colour_pallet)} Colours displayed.\n")
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a module that allows you the change the colour of the terminal using the batch colour changing syntax.
+This is a module that allows you the change the colour of the terminal using the batch colour syntax.
 It works on all known platforms.
 
 ## Table of Content
@@ -14,14 +14,14 @@ It works on all known platforms.
     1. [Using pip](#using-pip)
     2. [Using python](#using-python)
 5. [Usage](#usage)
-    1. [Impoting](#importing)
+    1. [Importing](#importing)
     2. [Initialising](#initialising)
-    3. [Calling the pause function](#calling-the-pause-function)
-    4. [Asking a question](#asking-a-question)
-        1. [Where do you live ?](#where-do-you-live)
-        2. [How old are you ?](#how-old-are-you)
-        3. [Do you like sugar ?](#do-you-like-sugar)
-6. [Available boiling](#available-boiling)
+    3. [Calling the test_colours function](#calling-the-testcolours-function)
+        1. [Epilepsy warning](#epilepsy-warning)
+    4. [Changing the colour](#changing-the-colour)
+        1. [Displaying text and the colour](#displaying-text-and-the-colour)
+        2. [Only changing the colour](#only-changing-the-colour)
+6. [Available colours](#available-colours)
 7. [Change the initialisation content](#change-the-initialisation-content)
     1. [Changing the forbidden characters](#changing-the-forbidden-characters)
     2. [Changing the description](#changing-the-descriptions)
@@ -34,7 +34,8 @@ It works on all known platforms.
 ### Using pip
 
 ```sh
-pip install -U ask-question
+pip install -U colorama
+pip install -U colourise-output
 ```
 
 ### Using python
@@ -42,13 +43,15 @@ pip install -U ask-question
 Under windows:
 
 ```bat
-py -m pip install -U ask-question
+py -m pip install -U colorama
+py -m pip install -U colourise-output
 ```
 
 Under Linux/Mac OS:
 
 ```sh
-python3 -m pip install -U ask-question
+python3 -m pip install -U colorama
+python3 -m pip install -U colourise-output
 ```
 
 ## Usage
@@ -56,53 +59,64 @@ python3 -m pip install -U ask-question
 ### Importing
 
 ```py
-import ask_question as aq
+import colourise_output as co
 ```
 
 ### Initialising
 
-The generic class is: `AskQuestion(human_type:dict={}, illegal_characters_nb:str="")`
+The generic class is: `ColouriseOutput()`
+The generic loading function is: `init_ressources(self)`
+The output is: None
 
 ```py
-AQI = aq.AskQuestion()
+COI = co.ColouriseOutput()
+COI.init_ressources()
 ```
 
-### Calling the pause function
+### Calling the test_colours function
 
 The generic function is:
 
 ```py
-pause(self, pause_message:str="Press enter to continue...")
+test_colours(self, delay:int=0)
 ```
 
 The output is: None
 
 ```py
-AQI.pause("Press enter to continue ...")
+COI.test_colours()
 ```
 
-### Asking a Question
+Calling this function will result in the function displaying all the available colours as well as their colour code (what you use to call them).
+
+#### Epilepsy warning
+
+Warning: Avoid this function if you are epileptic or set the delay to 1
+
+```py
+COI.test_colours(1)
+```
+
+### Changing the colour
 
 The generic function to ask a question is:
 
 ```py
-ask_question(self, question:str, answer_type:str)
+display(self, colour:str, attributes:tuple=(), text:str="")
 ```
 
-The outputs of this functions can be:
+The outputs of this function is: None
+The terminal will display the next lines in the desired colour.
 
-* str   = a string
-* int   = a whole number
-* float = a floating number
-
-#### Where do you live ?
+#### Displaying text and the colour
 
 ```py
-answer = AQI.ask_question("Where are you from? ", "str")
-print(f"You live in {answer}!")
+COI.display("0A", (), "Hello World !\n")
 ```
 
-#### How old are you ?
+The text "Hello World" will be displayed in green (A) on a black background (0).
+
+#### Only changing the colour
 
 ```py
 answer = AQI.ask_question("How old are you?", "uint")
@@ -112,33 +126,30 @@ if answer > 1:
 print(f"You are {answer} year{ADD_S} old !")
 ```
 
-#### Do you like sugar ?
+## Available colours
 
-```py
-answer = AQI.ask_question("Do you like sugar? [(Y)es/(n)o]: ", "bool")
-if answer == True:
-    print("You like sugar !")
-else:
-    print("You do not like sugar.")
-```
+Here is the windows colour pallet and how to use it:
 
-## Available boiling
+### Windows colour pallet
 
-Here are all the available boiling options and their explanation:
+* 0: Black
+* 1: Blue
+* 2: Green
+* 3: Aqua
+* 4: Red
+* 5: Purple
+* 6: Yellow
+* 7: White
+* 8: Gray
+* 9: Light Blue
+* A: Light Green
+* B: Light Aqua
+* C: Light Red
+* D: Light Purple
+* E: Light Yellow
+* F: Bright White
 
-* int = whole number (-1, 0, 1, 2, 3, etc...)
-* float = floating number (-1.2, 0.1, 1.2, etc...)
-* uint = whole positive number (0, 1, 2, etc...)
-* ufloat = whole positive floating number (0.1, 1.2, etc ...)
-* num = numeric (numbers from 0 onwards)
-* alnum = alphanumeric (only numbers and the alphabet)
-* isalpha = alphabet (from a to z and A to Z)
-* char = alphabet (from a to z and A to Z)
-* ascii = ascii Table
-* str = string (any character you can type)
-* version = version (numbers seperated by '.' characters)
-* ver = version (numbers seperated by '.' characters)
-* bool = boolean (yes/True/1 or no/False/0 answer type)
+### Using the Windows colour pallet
 
 ## Change the initialisation content
 
