@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='colourise-output',
-    version='1.0.0',
+    version='1.1.0',
     scripts=['src/colourise_output.py'] ,
     author="Henry Letellier",
     author_email="henrysoftwarehouse@protonmail.com",

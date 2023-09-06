@@ -1,24 +1,27 @@
 ##
-## EPITECH PROJECT, 2022
-## Desktop_pet (Workspace)
-## File description:
-## colourise_output.py
+# EPITECH PROJECT, 2022
+# Desktop_pet (Workspace)
+# File description:
+# colourise_output.py
 ##
 
 """
 The file containing the code in charge of outputting
 coloured text into the terminal.
-This program is provided as if and without any warranty
-Crediting the author would be appreciated
+This class follows the batch colour coding rules (from 0 to F for foreground and background)
 """
 
 import os
 import platform
-from time import sleep
 import colorama as COC
 
+
 class ColouriseOutput:
-    """ The class in charge of adding colour to text """
+    """
+    The class in charge of adding colour to text 
+    This class follows the batch colour coding rules (from 0 to F for foreground and background)
+    """
+
     def __init__(self) -> None:
         self.author = "Henry Letellier"
         self.colour_pallet = {}
@@ -26,37 +29,42 @@ class ColouriseOutput:
         self.colourise_output = True
         self.wich_system = platform.system()
 
-    def process_attributes(self, attributes:tuple=()) -> list:
+    def process_attributes(self, attributes: tuple = ()) -> list:
         """ Convert the inputted tuple to a list containing the options """
         finall_attributes = ""
         attributes_length = len(attributes)
         if attributes_length > 0 and attributes[0] == True:
-            finall_attributes+="\033[01m" #bold
+            finall_attributes += "\033[01m"  # bold
         # if attributes_length > 1 and attributes[1] == True:
         #     finall_attributes.append("dark")
         if attributes_length > 2 and attributes[2] == True:
-            finall_attributes+="\033[04m" #underline
+            finall_attributes += "\033[04m"  # underline
         if attributes_length > 3 and attributes[3] == True:
-            finall_attributes+="\033[05m" #blink
+            finall_attributes += "\033[05m"  # blink
         # if attributes_length > 4 and attributes[4] == True:
             # finall_attributes.append("reverse")
         # if attributes_length > 5 and attributes[5] == True:
             # finall_attributes.append("concealed")
         return finall_attributes
 
-    def display(self, colour:str, attributes:tuple=(), text:str="") -> None:
+    def display(self, colour: str, attributes: tuple = (), text: str = "") -> None:
         """ Depending on the system, change the command used to output colour """
         processed_attributes = self.process_attributes(attributes)
         if (self.colourise_output == True):
             try:
-                print(f"{self.unix_colour_pallet[colour]}{processed_attributes}{text}", end="")
+                print(
+                    f"{self.unix_colour_pallet[colour]}{processed_attributes}{text}",
+                    end=""
+                )
             except IOError:
                 if (self.wich_system == "Windows"):
                     os.system(f"{self.colour_pallet[colour]}")
                     if len(text) > 0:
                         print(f"{text}", end="")
                 else:
-                    os.system(f"echo -e \"{self.colour_pallet[colour]}{processed_attributes}{text}\"")
+                    os.system(
+                        f"echo -e \"{self.colour_pallet[colour]}{processed_attributes}{text}\""
+                    )
 
     def load_for_windows(self) -> None:
         """ Prepare the Windows colour pallet """
@@ -74,54 +82,59 @@ class ColouriseOutput:
 
     def load_for_non_windows(self) -> None:
         """ Prepare the non Windows colour pallet """
-        color_list = ["0 = 30","1 = 34","2 = 32","3 = 36","4 = 31","5 = 35","6 = 33","7 = 37","8 = 90","9 = 94","a = 92","b = 96","c = 91","d = 95","e = 93","f = 97","0"]
-        color_list = ["30","34","32","36","31","35","33","37","90","94","92","96","91","95","93","97","0"]
-        g=h=0
+        color_list = [
+            "0 = 30", "1 = 34", "2 = 32", "3 = 36", "4 = 31", "5 = 35", "6 = 33", "7 = 37",
+            "8 = 90", "9 = 94", "a = 92", "b = 96", "c = 91", "d = 95", "e = 93", "f = 97", "0"
+        ]
+        color_list = [
+            "30", "34", "32", "36", "31", "35", "33", "37",
+            "90", "94", "92", "96", "91", "95", "93", "97", "0"
+        ]
+        g = h = 0
         for foregound in "0123456789ABCDEFr":
-            h=0
+            h = 0
             for background in "0123456789ABCDEFr":
-                self.colour_pallet[f"{background}{foregound}"]=f"\\e[{int(color_list[h])+10}m\\e[{color_list[g]}m"
-                self.unix_colour_pallet[f"{background}{foregound}"]=f"\033[{int(color_list[h])+10}m\033[{color_list[g]}m"
-                h+=1
-            g+=1
+                self.colour_pallet[
+                    f"{background}{foregound}"] = f"\\e[{int(color_list[h])+10}m\\e[{color_list[g]}m"
+                self.unix_colour_pallet[
+                    f"{background}{foregound}"] = f"\033[{int(color_list[h])+10}m\033[{color_list[g]}m"
+                h += 1
+            g += 1
 
     def init_pallet(self) -> None:
         """ Prepare and load an intersystem pallet based on the Windows colour format """
         COC.reinit()
         self.load_for_non_windows()
-        if (self.wich_system == "Windows") :
+        if (self.wich_system == "Windows"):
             self.load_for_windows()
-    
-    def load_ressources(self) -> None:
-        """ Same as init_pallet but easier to remember due to unload_ressources """
-        self.init_pallet()
-    
-    def init_ressources(self) -> None:
-        """ Same as init_pallet but easier to remember due to unload_ressources """
-        self.init_pallet()
 
     def unload_ressources(self) -> None:
         """ Free the ressources that can be freed """
         COC.deinit()
-    
-    def deinit_ressources(self) -> None:
-        """ Same as unload_ressources but easier to remember dur to unload ressources """
-        self.unload_ressources()
 
-    def test_colours(self, delay:int=0) -> None:
+    def test_colours(self) -> None:
         """ Display all the available colours and their code """
         print("Displaying all available colours:")
-        colour_pallet_list = list(self.unix_colour_pallet)
-        colour_pallet_list.sort()
-        for i in colour_pallet_list:
-            self.display("rr", (), "\n")
-            self.display(i, (), f"Current colour: '{i}'")
-            sleep(delay)
-        self.display("rr", (), f"\n{len(self.unix_colour_pallet)} Colours displayed.\n")
+        counter = 0
+        for background in "0123456789ABCDEFr":
+            for foregound in "0123456789ABCDEFr":
+                counter += 1
+                self.display("rr", (), "\n")
+                self.display(
+                    f"{background}{foregound}",
+                    (),
+                    f"Current colour: '{background}{foregound}'"
+                )
+        self.display(
+            "rr", (), f"\n{counter} Colours displayed.\n"
+        )
+
 
 if __name__ == '__main__':
     CI = ColouriseOutput()
     CI.init_pallet()
     CI.test_colours()
+    CI.display("0A", (), "Hello World !\n")
+    CI.display("rr", "")
     CI.unload_ressources()
     print(f"Created by {CI.author}")
