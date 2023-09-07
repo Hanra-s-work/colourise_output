@@ -20,7 +20,7 @@ class ColouriseOutput:
     """
     The class in charge of adding colour to text 
     This class follows the batch colour coding rules (from 0 to F for foreground and background)
-    """
+"""
 
     def __init__(self) -> None:
         self.author = "Henry Letellier"
@@ -33,24 +33,24 @@ class ColouriseOutput:
         """ Convert the inputted tuple to a list containing the options """
         finall_attributes = ""
         attributes_length = len(attributes)
-        if attributes_length > 0 and attributes[0] == True:
+        if attributes_length > 0 and attributes[0] is True:
             finall_attributes += "\033[01m"  # bold
-        # if attributes_length > 1 and attributes[1] == True:
+        # if attributes_length > 1 and attributes[1] is True:
         #     finall_attributes.append("dark")
-        if attributes_length > 2 and attributes[2] == True:
+        if attributes_length > 2 and attributes[2] is True:
             finall_attributes += "\033[04m"  # underline
-        if attributes_length > 3 and attributes[3] == True:
+        if attributes_length > 3 and attributes[3] is True:
             finall_attributes += "\033[05m"  # blink
-        # if attributes_length > 4 and attributes[4] == True:
+        # if attributes_length > 4 and attributes[4] is True:
             # finall_attributes.append("reverse")
-        # if attributes_length > 5 and attributes[5] == True:
+        # if attributes_length > 5 and attributes[5] is True:
             # finall_attributes.append("concealed")
         return finall_attributes
 
     def display(self, colour: str, attributes: tuple = (), text: str = "") -> None:
         """ Depending on the system, change the command used to output colour """
         processed_attributes = self.process_attributes(attributes)
-        if (self.colourise_output == True):
+        if (self.colourise_output is True):
             try:
                 print(
                     f"{self.unix_colour_pallet[colour]}{processed_attributes}{text}",
@@ -101,16 +101,24 @@ class ColouriseOutput:
                 h += 1
             g += 1
 
-    def init_pallet(self) -> None:
+    def init_pallet(self) -> int:
         """ Prepare and load an intersystem pallet based on the Windows colour format """
-        COC.reinit()
-        self.load_for_non_windows()
-        if (self.wich_system == "Windows"):
-            self.load_for_windows()
+        try:
+            COC.reinit()
+            self.load_for_non_windows()
+            if (self.wich_system == "Windows"):
+                self.load_for_windows()
+            return 0
+        except IOError:
+            return 84
 
-    def unload_ressources(self) -> None:
+    def unload_ressources(self) -> int:
         """ Free the ressources that can be freed """
-        COC.deinit()
+        try:
+            COC.deinit()
+            return 0
+        except IOError:
+            return 84
 
     def test_colours(self) -> None:
         """ Display all the available colours and their code """
