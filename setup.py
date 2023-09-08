@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8", newline="\n") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='colourise-output',
+    name='colourise_output',
     version='1.1.0',
     packages=setuptools.find_packages(),
     install_requires=[
