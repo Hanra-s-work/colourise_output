@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8", newline="\n") as fh:
 
 setuptools.setup(
     name='colourise_output',
-    version='1.1.0',
+    version='1.1.1',
     packages=setuptools.find_packages(),
     install_requires=[
         "colorama==0.4.6"
