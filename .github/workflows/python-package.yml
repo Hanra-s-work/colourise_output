@@ -1,4 +1,4 @@
-name: colourise-output
+name: colourise-output-pypi
 
 on:
   push:
