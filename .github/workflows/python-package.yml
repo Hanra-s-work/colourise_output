@@ -5,6 +5,10 @@ on:
     tags: 
       # - "v*"
       - "gitignore"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
