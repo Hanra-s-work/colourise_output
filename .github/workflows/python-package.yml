@@ -2,8 +2,8 @@ name: colourise-output-pypi
 
 on:
   push:
-    tags:
-      - "gitignore"
+    tags: 
+      - "v*"
   pull_request:
     branches:
       - main
