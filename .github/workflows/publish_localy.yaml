@@ -152,7 +152,6 @@ jobs:
         pip install build
         python -m build
 
-    # Add the following steps if you want to publish to GitHub Releases
     - name: Update author
       run: |
         git config --local user.name "${{secrets.USER_NAME_E}}"
