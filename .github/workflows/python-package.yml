@@ -2,8 +2,8 @@ name: colourise-output-pypi
 
 on:
   push:
-    tags: 
-      - "v*"
+    tags:
+      - 'v*'
   pull_request:
     branches:
       - main
@@ -17,6 +17,7 @@ env:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -151,6 +152,11 @@ jobs:
         pip install build
         python -m build
 
+    - name: Update author
+      run: |
+        git config --local user.name "${{secrets.USER_NAME_E}}"
+        git config --local user.email "${{secrets.USER_EMAIL_E}}"
+
       # Add the following steps if you want to publish to PyPI
     - name: Build and publish to PyPI
       if: matrix.python-version == env.MATRIX_VERSION_PUBLISHING
@@ -160,4 +166,4 @@ jobs:
         twine upload dist/*
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
