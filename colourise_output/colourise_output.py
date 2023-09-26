@@ -23,6 +23,7 @@ class ColouriseOutput:
 """
 
     def __init__(self) -> None:
+        self.__version__ = "1.0.0"
         self.author = "Henry Letellier"
         self.colour_pallet = {}
         self.unix_colour_pallet = dict()
@@ -50,14 +51,14 @@ class ColouriseOutput:
     def display(self, colour: str, attributes: tuple = (), text: str = "") -> None:
         """ Depending on the system, change the command used to output colour """
         processed_attributes = self.process_attributes(attributes)
-        if (self.colourise_output is True):
+        if self.colourise_output is True:
             try:
                 print(
                     f"{self.unix_colour_pallet[colour]}{processed_attributes}{text}",
                     end=""
                 )
             except IOError:
-                if (self.wich_system == "Windows"):
+                if self.wich_system == "Windows":
                     os.system(f"{self.colour_pallet[colour]}")
                     if len(text) > 0:
                         print(f"{text}", end="")
@@ -69,16 +70,16 @@ class ColouriseOutput:
     def load_for_windows(self) -> None:
         """ Prepare the Windows colour pallet """
         for i in "0123456789ABCDEFr":
-            for b in "0123456789ABCDEFr":
-                if (i == 'r'):
-                    if (b == 'r'):
-                        self.colour_pallet[f"{i}{b}"] = "color 0A"
+            for j in "0123456789ABCDEFr":
+                if i == 'r':
+                    if j == 'r':
+                        self.colour_pallet[f"{i}{j}"] = "color 0A"
                     else:
-                        self.colour_pallet[f"{i}{b}"] = f"color 0{b}"
-                elif (b == 'r'):
-                    self.colour_pallet[f"{i}{b}"] = f"color {i}A"
+                        self.colour_pallet[f"{i}{j}"] = f"color 0{j}"
+                elif j == 'r':
+                    self.colour_pallet[f"{i}{j}"] = f"color {i}A"
                 else:
-                    self.colour_pallet[f"{i}{b}"] = f"color {i}{b}"
+                    self.colour_pallet[f"{i}{j}"] = f"color {i}{j}"
 
     def load_for_non_windows(self) -> None:
         """ Prepare the non Windows colour pallet """
@@ -90,23 +91,25 @@ class ColouriseOutput:
             "30", "34", "32", "36", "31", "35", "33", "37",
             "90", "94", "92", "96", "91", "95", "93", "97", "0"
         ]
-        g = h = 0
-        for foregound in "0123456789ABCDEFr":
-            h = 0
+        i = j = 0
+        for foreground in "0123456789ABCDEFr":
+            j = 0
             for background in "0123456789ABCDEFr":
                 self.colour_pallet[
-                    f"{background}{foregound}"] = f"\\e[{int(color_list[h])+10}m\\e[{color_list[g]}m"
+                    f"{background}{foreground}"
+                ] = f"\\e[{int(color_list[j])+10}m\\e[{color_list[i]}m"
                 self.unix_colour_pallet[
-                    f"{background}{foregound}"] = f"\033[{int(color_list[h])+10}m\033[{color_list[g]}m"
-                h += 1
-            g += 1
+                    f"{background}{foreground}"
+                ] = f"\033[{int(color_list[j])+10}m\033[{color_list[i]}m"
+                j += 1
+            i += 1
 
     def init_pallet(self) -> int:
         """ Prepare and load an intersystem pallet based on the Windows colour format """
         try:
             COC.reinit()
             self.load_for_non_windows()
-            if (self.wich_system == "Windows"):
+            if self.wich_system == "Windows":
                 self.load_for_windows()
             return 0
         except IOError:
@@ -125,13 +128,13 @@ class ColouriseOutput:
         print("Displaying all available colours:")
         counter = 0
         for background in "0123456789ABCDEFr":
-            for foregound in "0123456789ABCDEFr":
+            for foreground in "0123456789ABCDEFr":
                 counter += 1
                 self.display("rr", (), "\n")
                 self.display(
-                    f"{background}{foregound}",
+                    f"{background}{foreground}",
                     (),
-                    f"Current colour: '{background}{foregound}'"
+                    f"Current colour: '{background}{foreground}'"
                 )
         self.display(
             "rr", (), f"\n{counter} Colours displayed.\n"
