@@ -2,8 +2,10 @@ name: colourise-output-pypi
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v*'
+      - "v*.*.*"
   pull_request:
     branches:
       - main
@@ -15,6 +17,7 @@ env:
   IS_RELEASE: is_release.txt
   MATRIX_VERSION_PUBLISHING: "3.10"
   SOURCE_CODE_PATH: colourise_output/colourise_output.py
+  LATEST_TAG: ""
 
 jobs:
   build:
@@ -27,10 +30,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -38,9 +41,10 @@ jobs:
       id: get_latest_tag
       run: |
         echo "Getting tags"
-        git fetch --tags # Make sure to fetch the tags first
+        # git fetch --tags # Make sure to fetch the tags first
         echo "Updated the list"
         latest_tag=$(git tag --list "v*" | sort -rV | head -n 1)
+        echo "Tag list: $(git tag -l)"
         echo "Latest tag = $latest_tag"
         if [ "$latest_tag" == "" ]; then
           echo "No tags found matching 'v*'."
@@ -50,68 +54,75 @@ jobs:
           echo "Latest Tag: $latest_tag"
         fi
         echo "$latest_tag" > ${{env.TAG_FILE}}
+        echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
         echo -e "\n\n\n\n\n\n\n\n\n"
         echo "new_tag = $latest_tag"
         echo "env.new_tag = ${{env.tag_file}}"
         echo "cat env.new_tag = $(cat ${{env.TAG_FILE}})"
+        echo "env.LATEST_TAG = ${{env.LATEST_TAG}}"
         echo -e "\n\n\n\n\n\n\n\n\n"
 
-    - name: Check if Latest Tag is a Release
-      id: is_release
-      run: |
-        latest_tag="$(cat ${{env.TAG_FILE}})"
-        is_release="false"
-        latest_updated_tag=$(git tag --list "v*" | sort -rV | head -n 1)
-        if [[ $latest_updated_tag == $latest_tag ]]; then
-          is_release="true"
-        fi
-        echo "$is_release" > ${{env.IS_RELEASE}}
-        echo -e "\n\n\n\n\n\n\n\n\n"
-        echo "Is_release = $is_release"
-        echo "env.Is_release = ${{env.is_release}}"
-        echo "cat env.Is_release = $(cat ${{env.is_release}})"
-        echo -e "\n\n\n\n\n\n\n\n\n"
+    # - name: Check if Latest Tag is a Release
+    #   id: is_release
+    #   run: |
+    #     latest_tag="$(cat ${{env.TAG_FILE}})"
+    #     is_release="false"
+    #     latest_updated_tag=$(git tag --list "v*" | sort -rV | head -n 1)
+    #     if [[ $latest_updated_tag == $latest_tag ]]; then
+    #       is_release="true"
+    #     fi
+    #     echo "$is_release" > ${{env.IS_RELEASE}}
+    #     echo -e "\n\n\n\n\n\n\n\n\n"
+    #     echo "Is_release = $is_release"
+    #     echo "env.Is_release = ${{env.is_release}}"
+    #     echo "cat env.Is_release = $(cat ${{env.is_release}})"
+    #     echo "env.new_tag = ${{env.TAG_FILE}}"
+    #     echo "env.is_release = $(cat ${{env.IS_RELEASE}})"
+    #     echo "cat env.new_tag = $(cat ${{env.TAG_FILE}})"
+    #     echo "cat env.is_release = $(cat ${{env.IS_RELEASE}})"
+    #     echo -e "\n\n\n\n\n\n\n\n\n"
 
-    - name: Increment Tag Version
-      id: increment_tag
-      run: |
-        is_release="$(cat ${{env.IS_RELEASE}})"
-        latest_tag="$(cat ${{env.TAG_FILE}})"
-        echo "ls = $(ls)"
-        echo "is_release = $is_release"
-        echo "latest_tag = $latest_tag"
-        if [[ $is_release == "true" ]]; then
-          # Parse the latest tag and increment the version component you want
-          # Example: Convert "v1.2.3" to "v1.2.4"
-          new_tag="${latest_tag/v/}"  # Remove the leading "v"
-          echo "new_tag = $new_tag"
-          IFS='.' read -ra version <<< "$new_tag"
-          echo "declare -p version = $(declare -p $version)"
-          echo "declare -p version[0] = $(declare -p ${version[0]})"
-          echo "declare -p version[1] = $(declare -p ${version[1]})"
-          echo "declare -p version[2] = $(declare -p ${version[2]})"
-          echo "version[2]+1 = $(expr "${version[2]}" + 1)"
-          echo "version[*] = ${version[*]}"
-          echo "version = ${version}"
-          echo "#version = ${#version}"
-          echo "version[0] = ${version[0]}"
-          echo "version[1] = ${version[1]}"
-          echo "version[2] = ${version[2]}"
-          version[2]=$(expr "${version[2]}" + 1)  # Increment the third version component
-          echo "Version = ${version[*]}"
-          new_tag="v${version[0]}.${version[1]}.${version[2]}"
-          echo "New Tag: $new_tag"
-          echo "$new_tag" > ${{env.TAG_FILE}}
-        else
-          echo "Latest tag is not a release. Skipping tag increment."
-        fi
-        echo -e "\n\n\n\n\n\n\n\n\n"
-        echo "new_tag = $new_tag"
-        echo "env.new_tag = ${{env.TAG_FILE}}"
-        echo "env.is_release = $(cat ${{env.IS_RELEASE}})"
-        echo "cat env.new_tag = $(cat ${{env.TAG_FILE}})"
-        echo "cat env.is_release = $(cat ${{env.IS_RELEASE}})"
-        echo -e "\n\n\n\n\n\n\n\n\n"
+    # - name: Increment Tag Version
+    #   id: increment_tag
+    #   run: |
+    #     is_release="$(cat ${{env.IS_RELEASE}})"
+    #     latest_tag="$(cat ${{env.TAG_FILE}})"
+    #     echo "ls = $(ls)"
+    #     echo "is_release = $is_release"
+    #     echo "latest_tag = $latest_tag"
+    #     if [[ $is_release == "true" ]]; then
+    #       # Parse the latest tag and increment the version component you want
+    #       # Example: Convert "v1.2.3" to "v1.2.4"
+    #       new_tag="${latest_tag/v/}"  # Remove the leading "v"
+    #       echo "new_tag = $new_tag"
+    #       IFS='.' read -ra version <<< "$new_tag"
+    #       echo "declare -p version = $(declare -p $version)"
+    #       echo "declare -p version[0] = $(declare -p ${version[0]})"
+    #       echo "declare -p version[1] = $(declare -p ${version[1]})"
+    #       echo "declare -p version[2] = $(declare -p ${version[2]})"
+    #       echo "version[2]+1 = $(expr "${version[2]}" + 1)"
+    #       echo "version[*] = ${version[*]}"
+    #       echo "version = ${version}"
+    #       echo "#version = ${#version}"
+    #       echo "version[0] = ${version[0]}"
+    #       echo "version[1] = ${version[1]}"
+    #       echo "version[2] = ${version[2]}"
+    #       version[2]=$(expr "${version[2]}" + 1)  # Increment the third version component
+    #       echo "Version = ${version[*]}"
+    #       new_tag="v${version[0]}.${version[1]}.${version[2]}"
+    #       echo "New Tag: $new_tag"
+    #       echo "$new_tag" > ${{env.TAG_FILE}}
+    #     else
+    #       echo "Latest tag is not a release. Skipping tag increment."
+    #     fi
+    #     echo -e "\n\n\n\n\n\n\n\n\n"
+    #     echo "new_tag = $new_tag"
+    #     echo "env.new_tag = ${{env.TAG_FILE}}"
+    #     echo "env.is_release = $(cat ${{env.IS_RELEASE}})"
+    #     echo "cat env.new_tag = $(cat ${{env.TAG_FILE}})"
+    #     echo "cat env.is_release = $(cat ${{env.IS_RELEASE}})"
+    #     echo -e "\n\n\n\n\n\n\n\n\n"
+
     - name: Update module version in source code and builder file
       run: |
         latest_tag="$(cat ${{env.TAG_FILE}})"
@@ -154,18 +165,13 @@ jobs:
         pip install build
         python -m build
 
-    - name: Update author
-      run: |
-        git config --local user.name "${{secrets.USER_NAME_E}}"
-        git config --local user.email "${{secrets.USER_EMAIL_E}}"
-
-      # Add the following steps if you want to publish to PyPI
+    # Add the following steps if you want to publish to PyPI
     - name: Build and publish to PyPI
-      if: matrix.python-version == env.MATRIX_VERSION_PUBLISHING
+      if: startsWith(github.ref, 'refs/tags/') && matrix.python-version == env.MATRIX_VERSION_PUBLISHING
       run: |
         python -m build
         pip install twine
-        twine upload dist/*
+        twine upload dist/* --verbose
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
