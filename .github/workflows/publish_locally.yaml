@@ -11,6 +11,11 @@ on:
       - main
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  id-token: write
+
 env:
   SETUP_FILE: setup.py
   TAG_FILE: version.txt
