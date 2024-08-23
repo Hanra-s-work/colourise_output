@@ -3,7 +3,7 @@
 **/build
 **/.pytest_cache
 **/*.egg-info
-.vscode/**
+**/.vscode/**
 **/wenv/**
 **/lenv/**
 **/menv/**
