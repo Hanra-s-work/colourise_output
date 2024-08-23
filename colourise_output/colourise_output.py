@@ -23,6 +23,7 @@ except ImportError as e:
     msg += " Aborting.\nImport error msg:"
     raise RuntimeError(msg) from e
 
+ALL = "*"
 BOLD = "bold"
 DIM = "dim"
 ITALIC = "italic"
@@ -39,6 +40,7 @@ class ColouriseOutput:
     This class follows the batch colour coding rules (from 0 to F for foreground and background)
     """
     # ---- Custom font formaters ----
+    ALL = "*"
     BOLD = "bold"
     DIM = "dim"
     ITALIC = "italic"
@@ -535,9 +537,64 @@ class ColouriseOutput:
         except IOError:
             return self.error
 
+    def test_desing(self) -> None:
+        """_summary_
+        Test the different design attributes
+        """
+        self.display(
+            "0A",
+            UNDERLINE,
+            "Diplaying all available attributes\n"
+        )
+        counter = 0
+        attribute_list = [
+            ALL, BOLD, DIM, ITALIC,
+            UNDERLINE, BLINK, INVERT,
+            CONCEALED, STRIKE,
+            (BOLD, DIM),
+            (BOLD, ITALIC),
+            (BOLD, UNDERLINE),
+            (BOLD, BLINK),
+            (BOLD, INVERT),
+            (BOLD, CONCEALED),
+            (BOLD, STRIKE),
+            (ITALIC, DIM),
+            (ITALIC, BLINK),
+            (ITALIC, STRIKE),
+            (ITALIC, INVERT),
+            (ITALIC, UNDERLINE),
+            (ITALIC, CONCEALED),
+            (UNDERLINE, DIM),
+            (UNDERLINE, BLINK),
+            (UNDERLINE, STRIKE),
+            (UNDERLINE, INVERT),
+            (UNDERLINE, CONCEALED),
+            (BOLD, ITALIC, UNDERLINE)
+        ]
+        for attributes in attribute_list:
+            counter += 1
+            self.display("rr", (), "")
+            self.display("0A", (), "Current attribute: '")
+            self.display("0A", ITALIC, f"{attributes}")
+            self.display("rr", (), "")
+            self.display("0A", (), "' -> '")
+            self.display("0A", attributes, "Sample Text")
+            self.display("rr", (), "")
+            self.display("0A", (), "'")
+            self.display("rr", (), "\n")
+        self.display(
+            "rr",
+            (),
+            f"{counter} Attributes displayed.\n"
+        )
+
     def test_colours(self) -> None:
         """ Display all the available colours and their code """
-        print("Displaying all available colours:")
+        self.display(
+            "0A",
+            UNDERLINE,
+            "Displaying all available colours:"
+        )
         counter = 0
         for background in "0123456789ABCDEFr":
             for foreground in "0123456789ABCDEFr":
@@ -556,6 +613,8 @@ class ColouriseOutput:
 if __name__ == '__main__':
     CI = ColouriseOutput()
     CI.init_pallet()
+    CI.test_desing()
+    print("\n")
     CI.test_colours()
     CI.display("0A", (), "Hello World !\n")
     CI.display("rr", "")
